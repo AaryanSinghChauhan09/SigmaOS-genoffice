@@ -1,0 +1,9 @@
+[package]
+name = "sigmaos_genoffice"
+version = "0.1.0"
+edition = "2021"
+description = "GenOffice suite integration layer — offline-capable document, spreadsheet, slides, PDF, Markdown, and HTML authoring for SigmaOS"
+
+[lib]
+name = "sigmaos_genoffice"
+path = "src/lib.rs"
