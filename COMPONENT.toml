@@ -3,7 +3,7 @@ name = "SigmaOS-genoffice"
 tier = 3
 stability = "scaffold"
 language = "rust"
-description = "GenOffice suite integration layer — offline-capable document, spreadsheet, slides, PDF, Markdown, and HTML authoring for SigmaOS"
+description = "No GitHub description is set; component scope remains unclassified."
 upstream = ["https://github.com/linuxmint/libreoffice-style-mint"]
 
 [contract]
