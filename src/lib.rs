@@ -1,3 +1,4 @@
+#![forbid(unsafe_code)]
 use std::path::PathBuf;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -58,5 +59,45 @@ mod tests {
         suite.register_app("genoffice-docs");
         assert!(suite.has_app("genoffice-docs"));
         assert!(!suite.has_app("genoffice-sheet"));
+    }
+}
+
+
+#[cfg(test)]
+mod genoffice_extra_tests {
+    use super::*;
+    use std::path::PathBuf;
+
+    #[test]
+    fn test_mark_offline_ready_aaa() {
+        // Arrange
+        let doc = GenOfficeDocument::new(PathBuf::from("/doc.odt"), DocumentFormat::Odf, "My Doc");
+        assert!(!doc.offline_ready);
+        // Act
+        let ready = doc.mark_offline_ready();
+        // Assert
+        assert!(ready.offline_ready);
+    }
+
+    #[test]
+    fn test_all_mime_types_aaa() {
+        // Arrange & Act & Assert
+        let p = PathBuf::from("/test");
+        assert_eq!(GenOfficeDocument::new(p.clone(), DocumentFormat::Pdf, "").mime_type(), "application/pdf");
+        assert_eq!(GenOfficeDocument::new(p.clone(), DocumentFormat::Markdown, "").mime_type(), "text/markdown");
+        assert_eq!(GenOfficeDocument::new(p.clone(), DocumentFormat::Html, "").mime_type(), "text/html");
+        assert_eq!(GenOfficeDocument::new(p.clone(), DocumentFormat::Csv, "").mime_type(), "text/csv");
+        assert_eq!(GenOfficeDocument::new(p, DocumentFormat::Svg, "").mime_type(), "image/svg+xml");
+    }
+
+    #[test]
+    fn test_document_format_equality_aaa() {
+        // Arrange
+        let f1 = DocumentFormat::Ooxml;
+        let f2 = DocumentFormat::Ooxml;
+        let f3 = DocumentFormat::Pdf;
+        // Act & Assert
+        assert_eq!(f1, f2);
+        assert_ne!(f1, f3);
     }
 }
