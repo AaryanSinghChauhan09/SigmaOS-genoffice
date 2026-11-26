@@ -2,7 +2,15 @@
 use std::path::PathBuf;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum DocumentFormat { Odf, Ooxml, Pdf, Markdown, Html, Csv, Svg }
+pub enum DocumentFormat {
+    Odf,
+    Ooxml,
+    Pdf,
+    Markdown,
+    Html,
+    Csv,
+    Svg,
+}
 
 #[derive(Debug, Clone)]
 pub struct GenOfficeDocument {
@@ -14,7 +22,12 @@ pub struct GenOfficeDocument {
 
 impl GenOfficeDocument {
     pub fn new(path: PathBuf, format: DocumentFormat, title: impl Into<String>) -> Self {
-        Self { path, format, title: title.into(), offline_ready: false }
+        Self {
+            path,
+            format,
+            title: title.into(),
+            offline_ready: false,
+        }
     }
     pub fn mark_offline_ready(mut self) -> Self {
         self.offline_ready = true;
@@ -39,10 +52,18 @@ pub struct GenOfficeSuite {
 }
 
 impl GenOfficeSuite {
-    pub fn new() -> Self { Self::default() }
-    pub fn register_app(&mut self, app: impl Into<String>) { self.apps.push(app.into()); }
-    pub fn has_app(&self, name: &str) -> bool { self.apps.iter().any(|a| a == name) }
-    pub fn apps(&self) -> &[String] { &self.apps }
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn register_app(&mut self, app: impl Into<String>) {
+        self.apps.push(app.into());
+    }
+    pub fn has_app(&self, name: &str) -> bool {
+        self.apps.iter().any(|a| a == name)
+    }
+    pub fn apps(&self) -> &[String] {
+        &self.apps
+    }
 }
 
 #[cfg(test)]
@@ -50,7 +71,11 @@ mod tests {
     use super::*;
     #[test]
     fn document_mime_type_pdf() {
-        let doc = GenOfficeDocument::new(PathBuf::from("report.pdf"), DocumentFormat::Pdf, "Annual Report");
+        let doc = GenOfficeDocument::new(
+            PathBuf::from("report.pdf"),
+            DocumentFormat::Pdf,
+            "Annual Report",
+        );
         assert_eq!(doc.mime_type(), "application/pdf");
     }
     #[test]
@@ -61,7 +86,6 @@ mod tests {
         assert!(!suite.has_app("genoffice-sheet"));
     }
 }
-
 
 #[cfg(test)]
 mod genoffice_extra_tests {
@@ -83,11 +107,26 @@ mod genoffice_extra_tests {
     fn test_all_mime_types_aaa() {
         // Arrange & Act & Assert
         let p = PathBuf::from("/test");
-        assert_eq!(GenOfficeDocument::new(p.clone(), DocumentFormat::Pdf, "").mime_type(), "application/pdf");
-        assert_eq!(GenOfficeDocument::new(p.clone(), DocumentFormat::Markdown, "").mime_type(), "text/markdown");
-        assert_eq!(GenOfficeDocument::new(p.clone(), DocumentFormat::Html, "").mime_type(), "text/html");
-        assert_eq!(GenOfficeDocument::new(p.clone(), DocumentFormat::Csv, "").mime_type(), "text/csv");
-        assert_eq!(GenOfficeDocument::new(p, DocumentFormat::Svg, "").mime_type(), "image/svg+xml");
+        assert_eq!(
+            GenOfficeDocument::new(p.clone(), DocumentFormat::Pdf, "").mime_type(),
+            "application/pdf"
+        );
+        assert_eq!(
+            GenOfficeDocument::new(p.clone(), DocumentFormat::Markdown, "").mime_type(),
+            "text/markdown"
+        );
+        assert_eq!(
+            GenOfficeDocument::new(p.clone(), DocumentFormat::Html, "").mime_type(),
+            "text/html"
+        );
+        assert_eq!(
+            GenOfficeDocument::new(p.clone(), DocumentFormat::Csv, "").mime_type(),
+            "text/csv"
+        );
+        assert_eq!(
+            GenOfficeDocument::new(p, DocumentFormat::Svg, "").mime_type(),
+            "image/svg+xml"
+        );
     }
 
     #[test]
