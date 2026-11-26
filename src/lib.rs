@@ -12,6 +12,28 @@ pub enum DocumentFormat {
     Svg,
 }
 
+impl DocumentFormat {
+    /// Detect the format from a file extension (lowercased, no dot).
+    /// Returns `None` for unknown or missing extensions.
+    pub fn from_extension(ext: &str) -> Option<Self> {
+        match ext.to_ascii_lowercase().as_str() {
+            "odt" | "ods" | "odp" | "odg" | "odf" => Some(Self::Odf),
+            "docx" | "xlsx" | "pptx" | "docm" | "xlsm" | "pptm" => Some(Self::Ooxml),
+            "pdf" => Some(Self::Pdf),
+            "md" | "markdown" | "mdown" => Some(Self::Markdown),
+            "html" | "htm" | "xhtml" => Some(Self::Html),
+            "csv" | "tsv" => Some(Self::Csv),
+            "svg" => Some(Self::Svg),
+            _ => None,
+        }
+    }
+
+    /// Detect the format from a path's extension.
+    pub fn from_path(path: &std::path::Path) -> Option<Self> {
+        Self::from_extension(path.extension()?.to_str()?)
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct GenOfficeDocument {
     pub path: PathBuf,
@@ -84,6 +106,23 @@ mod tests {
         suite.register_app("genoffice-docs");
         assert!(suite.has_app("genoffice-docs"));
         assert!(!suite.has_app("genoffice-sheet"));
+    }
+    #[test]
+    fn format_detected_from_extension() {
+        assert_eq!(
+            DocumentFormat::from_extension("ODT"),
+            Some(DocumentFormat::Odf)
+        );
+        assert_eq!(
+            DocumentFormat::from_path(&PathBuf::from("/docs/report.docx")),
+            Some(DocumentFormat::Ooxml)
+        );
+        assert_eq!(
+            DocumentFormat::from_path(&PathBuf::from("/notes/readme.md")),
+            Some(DocumentFormat::Markdown)
+        );
+        assert_eq!(DocumentFormat::from_path(&PathBuf::from("/bin/tool")), None);
+        assert_eq!(DocumentFormat::from_extension("xyz"), None);
     }
 }
 
